@@ -2,16 +2,13 @@
 require 'includes/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Get form values
     $name = $_POST['name'];
     $email = $_POST['email'];
     $password = $_POST['password'];
     $role = $_POST['role'];
-
-    // Hash the password securely
+    
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-    // Insert user into database
     $stmt = $pdo->prepare("INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)");
 
     try {

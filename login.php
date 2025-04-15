@@ -1,16 +1,13 @@
 <?php
 session_start();
 
-// Database connection
 $servername = "localhost";
 $username = "root";
 $password = "";
 $dbname = "cafeteria";
 
-// Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
@@ -21,11 +18,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = trim($_POST['email']);
     $password = $_POST['password'];
     
-    // Basic validation
     if (empty($email) || empty($password)) {
         $error = "Please fill in all fields";
     } else {
-        // Prepare SQL statement to prevent SQL injection
         $stmt = $conn->prepare("SELECT id, name, email, password, role FROM users WHERE email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
@@ -33,15 +28,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         if ($result->num_rows == 1) {
             $user = $result->fetch_assoc();
-            // Verify password
             if (password_verify($password, $user['password'])) {
-                // Set session variables
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user_name'] = $user['name'];
                 $_SESSION['user_email'] = $user['email'];
                 $_SESSION['user_role'] = $user['role'];
                 
-                // Redirect based on role
                 if ($user['role'] === 'admin') {
                     header("Location: admin/dashboard.php");
                 } else {
